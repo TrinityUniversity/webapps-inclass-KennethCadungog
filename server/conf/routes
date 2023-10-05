@@ -13,7 +13,10 @@ GET        /validateGet1                 controllers.TaskList1.validateLoginGet(
 
 + nocsrf 
 POST       /validatePost1                controllers.TaskList1.validateLoginPost
++ nocsrf 
+POST       /createUser1                  controllers.TaskList1.createUser
 GET        /taskList1                    controllers.TaskList1.taskList
+GET        /logout1                      controllers.TaskList1.logout
 
 # Prefix must match `play.assets.urlPrefix`
 GET        /assets/*file                 controllers.Assets.at(file)
