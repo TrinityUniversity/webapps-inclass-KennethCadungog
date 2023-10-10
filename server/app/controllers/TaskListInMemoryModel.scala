@@ -11,7 +11,7 @@ object TaskListInMemoryModel {
     }
 
     def createUser(username: String, password: String): Boolean = {
-        if (users.contain(username)) false else {
+        if (users.contains(username)) false else {
             users(username) = password
             true 
         }

@@ -30,21 +30,21 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
           val username = args("username").head 
           val password = args("password").head 
           if(TaskListInMemoryModel.validateUser(username,password)) {
-            Redirect(routes.TaskList1.taskList()).withSession("username" -> username)
+            Redirect(routes.TaskList1.taskList).withSession("username" -> username)
           } else {
-            Redirect(routes.TaskList1.login()).flashing("error" -> "Invalid username/password combination.")
+            Redirect(routes.TaskList1.login).flashing("error" -> "Invalid username/password combination.")
           }
-        }.getOrElse(Redirect(routes.TaskList1.login()))
+        }.getOrElse(Redirect(routes.TaskList1.login))
     }
 
     def validateLoginForm = Action { implicit request =>
       loginForm.bindFromRequest.fold(
-          formWithError => BadRequest(views.html.login1(formWithErrors)),
+          formWithError => BadRequest(views.html.login1(formWithError)),
           ld => 
             if(TaskListInMemoryModel.validateUser(ld.username,ld.password)) {
-            Redirect(routes.TaskList1.taskList()).withSession("username" -> ld.username)
+            Redirect(routes.TaskList1.taskList).withSession("username" -> ld.username)
             } else {
-            Redirect(routes.TaskList1.login()).flashing("error" -> "Invalid username/password combination.")
+            Redirect(routes.TaskList1.login).flashing("error" -> "Invalid username/password combination.")
             }
       )
     }
@@ -55,11 +55,11 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
           val username = args("username").head 
           val password = args("password").head 
           if(TaskListInMemoryModel.createUser(username,password)) {
-            Redirect(routes.TaskList1.taskList()).withSession("username" -> username)
+            Redirect(routes.TaskList1.taskList).withSession("username" -> username)
           } else {
-            Redirect(routes.TaskList1.login()).flashing("error" -> "User creation failed.")
+            Redirect(routes.TaskList1.login).flashing("error" -> "User creation failed.")
           }
-        }.getOrElse(Redirect(routes.TaskList1.login()))
+        }.getOrElse(Redirect(routes.TaskList1.login))
     }
 
     def taskList = Action { implicit request =>
@@ -67,11 +67,11 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         usernameOption.map { username =>
             val tasks = TaskListInMemoryModel.getTask(username)
             Ok(views.html.taskList1(tasks))
-        }.getOrElse(Redirect(routes.TaskList1.login()))
+        }.getOrElse(Redirect(routes.TaskList1.login))
     } 
 
     def logout = Action {
-        Redirect(routes.TaskList1.login()).withNewSession 
+        Redirect(routes.TaskList1.login).withNewSession 
     }
 
     def addTask = Action { implicit request =>
@@ -81,9 +81,9 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         postVals.map { args =>
           val task = args("newTask").head
           TaskListInMemoryModel.addTask(username, task);
-          Redirect(routes.TaskList1.taskList())
-        }.getOrElse(Redirect(routes.TaskList1.taskList()))
-      }.getOrElse(Redirect(routes.TaskList1.login())) 
+          Redirect(routes.TaskList1.taskList)
+        }.getOrElse(Redirect(routes.TaskList1.taskList))
+      }.getOrElse(Redirect(routes.TaskList1.login)) 
     }
 
     def deleteTask = Action { implicit request =>
@@ -91,11 +91,11 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
       usernameOption.map { username =>
         val postVals = request.body.asFormUrlEncoded
         postVals.map { args =>
-          val task = args("index").head.toInt
+          val index = args("index").head.toInt
           TaskListInMemoryModel.removeTask(username, index);
-          Redirect(routes.TaskList1.taskList())
-        }.getOrElse(Redirect(routes.TaskList1.taskList()))
-      }.getOrElse(Redirect(routes.TaskList1.login())) 
+          Redirect(routes.TaskList1.taskList)
+        }.getOrElse(Redirect(routes.TaskList1.taskList))
+      }.getOrElse(Redirect(routes.TaskList1.login)) 
     } 
 
 }
