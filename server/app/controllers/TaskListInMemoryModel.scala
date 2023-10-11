@@ -26,8 +26,10 @@ object TaskListInMemoryModel {
     }
 
     def removeTask(username: String, index: Int): Boolean = {
-        if (index < 0 || tasks.get(username).isEmpty || index >= tasks(username.length)) false
-        tasks(username) = tasks(username).patch(index, Nil, 1)
-        true 
+        if (index < 0 || tasks.get(username).isEmpty || index >= tasks(username).length) false
+        else {
+            tasks(username) = tasks(username).patch(index, Nil, 1)
+            true 
+        }
     }
 }
