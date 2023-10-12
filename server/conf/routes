@@ -19,6 +19,10 @@ GET        /logout1                      controllers.TaskList1.logout
 POST       /addTask1                     controllers.TaskList1.addTask
 POST       /deleteTask1                  controllers.TaskList1.deleteTask
 
+GET        /pub_msgList1                 controllers.TaskList1.pub_msgList 
+POST       /add_pubMsg1                  controllers.TaskList1.add_pubMsg
+POST       /add_pvtMsg1                  controllers.TaskList1.add_pvtMsg
+
 # Prefix must match `play.assets.urlPrefix`
 GET        /assets/*file                 controllers.Assets.at(file)
 GET        /versionedAssets/*file        controllers.Assets.versioned(path="/public", file: Asset)

@@ -30,7 +30,8 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
           val username = args("username").head 
           val password = args("password").head 
           if(TaskListInMemoryModel.validateUser(username,password)) {
-            Redirect(routes.TaskList1.taskList).withSession("username" -> username)
+            //Redirect(routes.TaskList1.taskList).withSession("username" -> username)
+            Redirect(routes.TaskList1.pub_msgList).withSession("username" -> username)
           } else {
             Redirect(routes.TaskList1.login).flashing("error" -> "Invalid username/password combination.")
           }
@@ -42,7 +43,8 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
           formWithError => BadRequest(views.html.login1(formWithError)),
           ld => 
             if(TaskListInMemoryModel.validateUser(ld.username,ld.password)) {
-            Redirect(routes.TaskList1.taskList).withSession("username" -> ld.username)
+            //Redirect(routes.TaskList1.taskList).withSession("username" -> ld.username)
+            Redirect(routes.TaskList1.pub_msgList).withSession("username" -> ld.username)
             } else {
             Redirect(routes.TaskList1.login).flashing("error" -> "Invalid username/password combination.")
             }
@@ -55,7 +57,8 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
           val username = args("username").head 
           val password = args("password").head 
           if(TaskListInMemoryModel.createUser(username,password)) {
-            Redirect(routes.TaskList1.taskList).withSession("username" -> username)
+            //Redirect(routes.TaskList1.taskList).withSession("username" -> username)
+            Redirect(routes.TaskList1.pub_msgList).withSession("username" -> username)
           } else {
             Redirect(routes.TaskList1.login).flashing("error" -> "User creation failed.")
           }
@@ -98,4 +101,39 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
       }.getOrElse(Redirect(routes.TaskList1.login)) 
     } 
 
+    //Task 5 Code
+    
+    def pub_msgList =  Action { implicit request => 
+      val usernameOption = request.session.get("username")
+        usernameOption.map { username =>
+            val msgs = TaskListInMemoryModel.getPubMsg(username)
+            val pvt_msgs = TaskListInMemoryModel.getPvtMsg(username)
+            Ok(views.html.msgBoard1(msgs,pvt_msgs))
+        }.getOrElse(Redirect(routes.TaskList1.login))  
+    } 
+
+    def add_pubMsg = Action { implicit request =>
+      val usernameOption = request.session.get("username")
+      usernameOption.map { username =>
+        val postVals = request.body.asFormUrlEncoded
+        postVals.map { args =>
+          val message = args("newPubMsg").head
+          TaskListInMemoryModel.addPubMsg(username, message);
+          Redirect(routes.TaskList1.pub_msgList)
+        }.getOrElse(Redirect(routes.TaskList1.pub_msgList))
+      }.getOrElse(Redirect(routes.TaskList1.login)) 
+    }
+
+    def add_pvtMsg = Action { implicit request =>
+      val usernameOption = request.session.get("username")
+      usernameOption.map { username =>
+        val postVals = request.body.asFormUrlEncoded
+        postVals.map { args =>
+          val message = args("newPvtMsg").head
+          TaskListInMemoryModel.addPvtMsg(username, message);
+          Redirect(routes.TaskList1.pub_msgList)
+        }.getOrElse(Redirect(routes.TaskList1.pub_msgList))
+      }.getOrElse(Redirect(routes.TaskList1.login)) 
+    }
+    
 }

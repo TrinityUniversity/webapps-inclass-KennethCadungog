@@ -1,0 +1,39 @@
+@* msgBoard1 Template File *@
+@(msgs: Seq[String], pvt_msgs: Seq[String])(implicit request: RequestHeader, flash: Flash)
+ 
+@main("Message Board") {
+    <h1>Message Board</h1>
+ 
+    <h2>Public Messages</h2>
+    <ul>
+        @for((msg, i) <- msgs.zipWithIndex) {
+            <li>@msg</li>
+        }
+    </ul>
+ 
+    <form method="post" action="@routes.TaskList1.add_pubMsg"> 
+        @helper.CSRF.formField
+        <input type="text" name="newPubMsg"></input>
+        <input type="submit"></input>
+    </form>
+
+
+    <h2>Private Messages</h2>
+    <ul>
+        @for((pvt_msg, i) <- pvt_msgs.zipWithIndex) {
+            <li>@pvt_msg</li>
+        }
+    </ul>
+
+    <form method="post" action="@routes.TaskList1.add_pvtMsg"> 
+        @helper.CSRF.formField
+        <input type="text" name="newPvtMsg"></input>
+        <input type="submit"></input>
+    </form>
+ 
+    <div>
+        <a href="@routes.TaskList1.logout">Logout</a>
+    </div>
+
+} 
+
