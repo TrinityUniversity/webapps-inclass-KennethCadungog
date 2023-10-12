@@ -1,8 +1,8 @@
 @* msgBoard1 Template File *@
-@(msgs: Seq[String], pvt_msgs: Seq[String])(implicit request: RequestHeader, flash: Flash)
+@(username: String, msgs: Seq[String], pvt_msgs: Seq[String])(implicit request: RequestHeader, flash: Flash)
  
 @main("Message Board") {
-    <h1>Message Board</h1>
+    <h1>@username's Message Board</h1>
  
     <h2>Public Messages</h2>
     <ul>
@@ -12,6 +12,7 @@
     </ul>
  
     <form method="post" action="@routes.TaskList1.add_pubMsg"> 
+        <h3>Send a Public Message</h3>
         @helper.CSRF.formField
         <input type="text" name="newPubMsg"></input>
         <input type="submit"></input>
@@ -21,13 +22,18 @@
     <h2>Private Messages</h2>
     <ul>
         @for((pvt_msg, i) <- pvt_msgs.zipWithIndex) {
-            <li>@pvt_msg</li>
+            <li>@pvt_msg </li>
         }
     </ul>
 
+    
     <form method="post" action="@routes.TaskList1.add_pvtMsg"> 
+        <h3>Send a Private Message</h3>
         @helper.CSRF.formField
-        <input type="text" name="newPvtMsg"></input>
+        User: <input type="text" name="user"></input>
+        <br>
+        Message: <input type="text" name="newPvtMsg"></input>
+        <br>
         <input type="submit"></input>
     </form>
  

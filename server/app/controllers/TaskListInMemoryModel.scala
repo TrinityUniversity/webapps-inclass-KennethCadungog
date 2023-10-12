@@ -3,7 +3,7 @@ package controllers
 import collection.mutable
 
 object TaskListInMemoryModel {
-    private val users = mutable.Map[String, String]("Mark" -> "pass")
+    private val users = mutable.Map[String, String]("web" -> "apps","mlewis" -> "prof")
     private val tasks = mutable.Map[String, List[String]]("Mark" -> List("Make vidoes", "eat", "sleep", "code"))
 
     def validateUser(username: String, password: String): Boolean = {
@@ -35,22 +35,21 @@ object TaskListInMemoryModel {
 
     //Task 5 Code
     
-    val pub_msgs = mutable.Map[String, List[String]]("Mark" -> List("I farted!","When's task 5 due?","Scala anybody?"))
-    //val pub_msgs = mutable.ListBuffer[String]()
-    private val pvt_msgs = mutable.Map[String, List[String]]("Mark" -> List("Default!"))
+    val pub_msgs = mutable.Buffer("mlewis: Scala anybody?")
+    private val pvt_msgs = mutable.Map[String, List[String]]()
+    private val web_pvtMsgs = mutable.Map[String, List[String]]("web" -> List("Hey it's Lewis!"))
+
     
     def getPubMsg(username: String): Seq[String] = {
-        pub_msgs.get(username).getOrElse(Nil)
-        //pub_msgs.getOrElse(username, mutable.ListBuffer[String]()).toList 
+        pub_msgs.toSeq
     }
 
     def getPvtMsg(username: String): Seq[String] = {
         pvt_msgs.get(username).getOrElse(Nil)
     }
 
-    def addPubMsg(username: String, message: String): Unit = {
-        pub_msgs(username) = message :: pub_msgs.get(username).getOrElse(Nil)
-        //pub_msgs.getOrElseUpdate(username, mutable.ListBuffer[String]()).append(message)
+    def addPubMsg(message: String): Unit = {
+        pub_msgs += message 
     }
 
     def addPvtMsg(username: String, message: String): Unit = {
