@@ -1,4 +1,4 @@
-package controllers
+package controllers 
 
 import javax.inject._
 
@@ -29,7 +29,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         postVals.map { args =>
           val username = args("username").head 
           val password = args("password").head 
-          if(TaskListInMemoryModel.validateUser(username,password)) {
+          if(models.TaskListInMemoryModel.validateUser(username,password)) {
             //Redirect(routes.TaskList1.taskList).withSession("username" -> username)
             Redirect(routes.TaskList1.msgList).withSession("username" -> username)
           } else {
@@ -42,7 +42,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
       loginForm.bindFromRequest.fold(
           formWithError => BadRequest(views.html.login1(formWithError)),
           ld => 
-            if(TaskListInMemoryModel.validateUser(ld.username,ld.password)) {
+            if(models.TaskListInMemoryModel.validateUser(ld.username,ld.password)) {
             //Redirect(routes.TaskList1.taskList).withSession("username" -> ld.username)
             Redirect(routes.TaskList1.msgList).withSession("username" -> ld.username)
             } else {
@@ -56,7 +56,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         postVals.map { args =>
           val username = args("username").head 
           val password = args("password").head 
-          if(TaskListInMemoryModel.createUser(username,password)) {
+          if(models.TaskListInMemoryModel.createUser(username,password)) {
             //Redirect(routes.TaskList1.taskList).withSession("username" -> username)
             Redirect(routes.TaskList1.msgList).withSession("username" -> username)
           } else {
@@ -68,7 +68,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
     def taskList = Action { implicit request =>
         val usernameOption = request.session.get("username")
         usernameOption.map { username =>
-            val tasks = TaskListInMemoryModel.getTask(username)
+            val tasks = models.TaskListInMemoryModel.getTask(username)
             Ok(views.html.taskList1(tasks))
         }.getOrElse(Redirect(routes.TaskList1.login))
     } 
@@ -83,7 +83,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         val postVals = request.body.asFormUrlEncoded
         postVals.map { args =>
           val task = args("newTask").head
-          TaskListInMemoryModel.addTask(username, task);
+          models.TaskListInMemoryModel.addTask(username, task);
           Redirect(routes.TaskList1.taskList)
         }.getOrElse(Redirect(routes.TaskList1.taskList))
       }.getOrElse(Redirect(routes.TaskList1.login)) 
@@ -95,7 +95,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         val postVals = request.body.asFormUrlEncoded
         postVals.map { args =>
           val index = args("index").head.toInt
-          TaskListInMemoryModel.removeTask(username, index);
+          models.TaskListInMemoryModel.removeTask(username, index);
           Redirect(routes.TaskList1.taskList)
         }.getOrElse(Redirect(routes.TaskList1.taskList))
       }.getOrElse(Redirect(routes.TaskList1.login)) 
@@ -106,8 +106,8 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
     def msgList =  Action { implicit request => 
       val usernameOption = request.session.get("username")
         usernameOption.map { username =>
-            val msgs = TaskListInMemoryModel.getPubMsg(username)
-            val pvt_msgs = TaskListInMemoryModel.getPvtMsg(username)
+            val msgs = models.TaskListInMemoryModel.getPubMsg(username)
+            val pvt_msgs = models.TaskListInMemoryModel.getPvtMsg(username)
             Ok(views.html.msgBoard1(username, msgs,pvt_msgs))
         }.getOrElse(Redirect(routes.TaskList1.login))  
     } 
@@ -118,7 +118,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         val postVals = request.body.asFormUrlEncoded
         postVals.map { args =>
           val message = args("newPubMsg").head
-          TaskListInMemoryModel.addPubMsg(s"$username: $message");
+          models.TaskListInMemoryModel.addPubMsg(s"$username: $message");
           Redirect(routes.TaskList1.msgList)
         }.getOrElse(Redirect(routes.TaskList1.msgList))
       }.getOrElse(Redirect(routes.TaskList1.login)) 
@@ -131,7 +131,7 @@ class TaskList1 @Inject()(cc: MessagesControllerComponents) extends MessagesAbst
         postVals.map { args =>
           val user = args("user").head 
           val message = args("newPvtMsg").head
-          TaskListInMemoryModel.addPvtMsg(user, s"$username: $message");
+          models.TaskListInMemoryModel.addPvtMsg(user, s"$username: $message");
           Redirect(routes.TaskList1.msgList)
         }.getOrElse(Redirect(routes.TaskList1.msgList))
       }.getOrElse(Redirect(routes.TaskList1.login)) 

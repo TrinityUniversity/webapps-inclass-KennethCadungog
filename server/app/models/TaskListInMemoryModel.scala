@@ -1,4 +1,4 @@
-package controllers
+package models
 
 import collection.mutable
 
@@ -36,8 +36,9 @@ object TaskListInMemoryModel {
     //Task 5 Code
     
     val pub_msgs = mutable.Buffer("mlewis: Scala anybody?")
+    //private val pvt_msgs = mutable.Map[String, List[String]]("mlewis" -> List(addPvtMsg("web","Long Live Scala!")))
     private val pvt_msgs = mutable.Map[String, List[String]]()
-    private val web_pvtMsgs = mutable.Map[String, List[String]]("web" -> List("Hey it's Lewis!"))
+
 
     
     def getPubMsg(username: String): Seq[String] = {
