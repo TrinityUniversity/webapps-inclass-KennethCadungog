@@ -8,14 +8,23 @@ class TaskList1Spec extends PlaySpec with GuiceOneServerPerSuite with OneBrowser
     "Task List 1" must {
         "login and access functions" in {
             go to s"http://localhost:$port/login1"
+            pageTitle mustBe "Login"
+            find(cssSelector("h2")).isEmpty mustBe false 
+            find(cssSelector("h2")).foreach(e => e.text mustBe "Login")
+            click on "username-login"
+            textField("username-login").value = "web"
+            click on "password-login"
+            pwdField("password").value = "apps"
+            submit()
             eventually {
-                find("h2").isEmpty mustBe false 
-                find("h2").foreach(e => e.text mustBe "Login")
-                click on "username-login"
-                textField("username-login").value = "web"
-                click on "password-login"
-                pwdField("password").value = "apps"
-                submit()
+                //Unsure if correct
+                println("In eventually")
+                println(currentUrl)
+                pageTitle mustBe "Login"
+                println("title passed")
+                find(cssSelector("h1")).isEmpty mustBe false 
+                println("h2 found")
+                find(cssSelector("h1")).foreach(e => e.text mustBe "@username's Message Board")
             }
         }
     }
