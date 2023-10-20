@@ -18,15 +18,16 @@
         @helper.CSRF.formField 
         <h3>Login with POST</h3>
         <br>
-        Username: <input type="text" name="username"></input>
+        Username: <input type="text" name="username" id="username-login"></input>
         <br>
-        Password: <input type="password" name="password"></input>
+        Password: <input type="password" name="password" id="password-login"></input>
         <br>
         <input type="submit"></input>
     </form>
 
     @helper.form(action = routes.TaskList1.validateLoginForm) {
         @helper.CSRF.formField
+        <h3>Create User with Play Form</h3>
         @helper.inputText(loginForm("Username"))
         @helper.inputText(loginForm("Password"))
         <div class="form-actions">
@@ -38,9 +39,9 @@
         @helper.CSRF.formField 
         <h3>Create User</h3>
         <br>
-        Username: <input type="text" name="username"></input>
+        Username: <input type="text" name="username" id="username-create"></input>
         <br>
-        Password: <input type="password" name="password"></input>
+        Password: <input type="password" name="password" id="password-create"></input>
         <br>
         <input type="submit"></input>
     </form>
