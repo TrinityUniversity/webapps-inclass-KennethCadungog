@@ -24,8 +24,8 @@ class TaskListInMemoryModelSpec extends PlaySpec {
             TaskListInMemoryModel.getPubMsg("web") mustBe (List("mlewis: Scala anybody?"))
         }
 
-        "get correct private message" in { //Probably Incorrect
-            TaskListInMemoryModel.getPvtMsg("web") mustBe (List("web","Long Live Scala!"))
+        "get correct private message" in { 
+            TaskListInMemoryModel.getPvtMsg("web") mustBe (List("mlewis: Long Live Scala!"))
         }
 
         "create new user with no tasks" in {
