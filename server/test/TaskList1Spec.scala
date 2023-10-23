@@ -11,7 +11,8 @@ class TaskList1Spec extends PlaySpec with GuiceOneServerPerSuite with OneBrowser
             find(cssSelector("h2")).isEmpty mustBe false 
             find(cssSelector("h2")).foreach(e => e.text mustBe "Login")
             click on "username-login"
-            textField("username-login").value = "web"
+            val username = "web"
+            textField("username-login").value = username 
             click on "password-login"
             pwdField(id("password-login")).value = "apps"
             submit()
@@ -23,7 +24,9 @@ class TaskList1Spec extends PlaySpec with GuiceOneServerPerSuite with OneBrowser
                 println("title passed")
                 find(cssSelector("h1")).isEmpty mustBe false 
                 println("h1 found")
-                find(cssSelector("h1")).foreach(e => e.text mustBe "@username's Message Board")
+                find(cssSelector("h1")).foreach(e => e.text mustBe s"$username's Message Board")
+                val expectedMessage = "mlewis: Scala anybody?"
+                findAll(cssSelector("li")).map(_.text) mustBe s"$expectedMessage"
             }
         }
     }
