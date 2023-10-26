@@ -23,6 +23,10 @@ GET        /msgList1                     controllers.TaskList1.msgList
 POST       /add_pubMsg1                  controllers.TaskList1.add_pubMsg
 POST       /add_pvtMsg1                  controllers.TaskList1.add_pvtMsg
 
+#Routes for WebSocket chat Application
+GET        /chat                         controllers.WebSocketChat.index 
+GET        /chat                         controllers.WebSocketChat.socket 
+
 # Prefix must match `play.assets.urlPrefix`
 GET        /assets/*file                 controllers.Assets.at(file)
 GET        /versionedAssets/*file        controllers.Assets.versioned(path="/public", file: Asset)
