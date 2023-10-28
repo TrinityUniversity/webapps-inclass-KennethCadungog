@@ -11,7 +11,7 @@ const socket = new WebSocket(socketRoute.replace("http","ws"));
 inputField.onkeydown = (event) => {
     if(event.key === 'Enter') {
         socket.send(inputField.value);
-        input.value = '';
+        inputField.value = '';
     }
 }
 
