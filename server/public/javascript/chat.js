@@ -15,7 +15,10 @@ inputField.onkeydown = (event) => {
     }
 }
 
-socket.onopen = (event) => socket.send("New user connected.");
+socket.onopen = (event) => {
+    console.log("WebSocket connection established.");
+    socket.send("New user connected.");
+};
 
 socket.onmessage = (event) => {
     outputArea.value += '\n' + event.data;

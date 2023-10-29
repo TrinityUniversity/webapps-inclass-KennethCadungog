@@ -25,7 +25,11 @@ POST       /add_pvtMsg1                  controllers.TaskList1.add_pvtMsg
 
 #Routes for WebSocket chat Application
 GET        /chat                         controllers.WebSocketChat.index 
-GET        /chatSocket                         controllers.WebSocketChat.socket 
+GET        /chatSocket                   controllers.WebSocketChat.socket 
+
+#Routes for Game room Application
+GET        /game                         controllers.GameSocketRoom.index 
+GET        /gameSocket                   controllers.GameSocketRoom.socket 
 
 # Prefix must match `play.assets.urlPrefix`
 GET        /assets/*file                 controllers.Assets.at(file)
