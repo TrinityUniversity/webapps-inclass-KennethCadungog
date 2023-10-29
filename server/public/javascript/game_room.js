@@ -16,59 +16,43 @@ const socket = new WebSocket(socketRoute.replace("http","ws"));
 
 let players = {};
 let player_size = 50;
+
 let player = {
     x: 0, y: 0
 };
 
-/*
-function generateRandomStart() {
-    const initialXPos = Math.random() * (window_width - player_size)
-    const initialYPos = Math.random() * (window_height - player_size)
-    return {x: initialXPos, y: initialYPos};
-}
-*/
 
-//const player = players[socket.id] = generateRandomStart();
-
-document.addEventListener("keydown", (event) => {
-    //const player = players[socket.id] = generateRandomStart();
-    //const player = players[socket.id];
-    let moved = false;
-
-    if (event.key === 'ArrowUp' && player.y > 0) {
-        player.y -= 5;
-        moved = true;
-    } else if (event.key === 'ArrowDown' && player.y < (window_height - player_size)) {
-        player.y += 5;
-        moved = true;
-    } else if (event.key === 'ArrowLeft' && player.x > 0) {
-        player.x -= 5;
-        moved = true;
-    } else if (event.key === 'ArrowRight' && player.x < (window_width - player_size)) {
-        player.x += 5;
-        moved = true;
-    }
-
-    if (moved) {
-        socket.send(JSON.stringify(player));
-        draw();
-    }
-});
-
-socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    players = data;
-    draw();
-};
-
-function draw() {
-    context.clearRect(0,0,canvas.width,canvas.height);
-
+let updateZone = function() {
+    requestAnimationFrame(updateZone);
+    context.clearRect(0,0,window_width,window_height);
     for(const id in players) {
         const player = players[id];
         context.fillStyle = 'red';
         context.fillRect(player.x,player.y,50,50);
     }
 
-    requestAnimationFrame(draw);
-}
+    player.x = Math.max(0,Math.min(player.x, window_width - 50));
+    player.y = Math.max(0,Math.min(player.y, window_height - 50));
+    context.fillRect(player.x,player.y,50,50);
+};
+updateZone();
+
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    players = data;
+    //draw();
+    updateZone();
+};
+
+document.addEventListener("keydown", (event) => {
+    if(event.code === 'ArrowUp') player.y -= 5;
+    if(event.code === 'ArrowDown') player.y += 5;
+    if(event.code === 'ArrowLeft') player.x -= 5;
+    if(event.code === 'ArrowRight') player.x += 5;
+
+    if(event.code === 'KeyW' || event.code === 'KeyS') player.y = 0;
+    if(event.code === 'KeyA' || event.code === 'KeyD') player.x = 0;
+
+    socket.send(JSON.stringify(player));
+});
+

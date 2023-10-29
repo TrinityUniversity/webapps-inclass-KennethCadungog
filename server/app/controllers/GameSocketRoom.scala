@@ -26,7 +26,6 @@ class GameSocketRoom @Inject() (cc: ControllerComponents)(implicit system: Actor
         println("Getting socket")
         ActorFlow.actorRef { out =>
           GameActor.props(out, manager)
-          //???
         }    
     }
 }
