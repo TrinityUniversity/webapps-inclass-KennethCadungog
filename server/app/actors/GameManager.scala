@@ -8,13 +8,13 @@ class GameManager extends Actor {
 
     import GameManager._
     def receive = {
-        case NewPlayer(chatter) => players ::= player
-        case Message(msg) => for (c <- chatters) c ! GameActor.SendMessage(msg)
-        case m => println("Unhandled message in ChatManager: " + m)
+        case NewPlayer(player) => players ::= player
+       //case Message(msg) => for (c <- chatters) c ! GameActor.SendMessage(msg)
+        case m => println("Unhandled player in GameManager: " + m)
     }
 }
 
 object GameManager {
     case class NewPlayer(chatter: ActorRef) 
-    case class Message(msg: String)
+    //case class Message(msg: String)
 }

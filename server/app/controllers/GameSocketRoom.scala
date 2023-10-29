@@ -10,13 +10,13 @@ import akka.actor.Actor
 import play.api.libs.streams.ActorFlow
 import akka.actor.ActorSystem
 import akka.stream.Materializer
-import actors.ChatActor
+import actors.GameActor
 import akka.actor.Props
-import actors.ChatManager
+import actors.GameManager
 
 @Singleton 
 class GameSocketRoom @Inject() (cc: ControllerComponents)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
-    //val manager = system.actorOf(Props[GameManager], "Manager")
+    val manager = system.actorOf(Props[GameManager], "GameManager")
 
     def index = Action { implicit request =>
         Ok(views.html.multiplayer())
@@ -25,8 +25,8 @@ class GameSocketRoom @Inject() (cc: ControllerComponents)(implicit system: Actor
     def socket = WebSocket.accept[String, String] { request =>
         println("Getting socket")
         ActorFlow.actorRef { out =>
-          //GameActor.props(out, manager)
-          ???
+          GameActor.props(out, manager)
+          //???
         }    
     }
 }
