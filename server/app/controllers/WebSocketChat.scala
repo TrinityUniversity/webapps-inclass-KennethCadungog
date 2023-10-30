@@ -16,7 +16,7 @@ import actors.ChatManager
 
 @Singleton 
 class WebSocketChat @Inject() (cc: ControllerComponents)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
-    val manager = system.actorOf(Props[ChatManager], "Manager")
+    val manager = system.actorOf(Props[ChatManager](), "Manager")
 
     def index = Action { implicit request =>
         Ok(views.html.chatPage())

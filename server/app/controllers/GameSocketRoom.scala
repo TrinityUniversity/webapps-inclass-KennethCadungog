@@ -16,15 +16,16 @@ import actors.GameManager
 
 @Singleton 
 class GameSocketRoom @Inject() (cc: ControllerComponents)(implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc) {
-    val manager = system.actorOf(Props[GameManager], "GameManager")
+    val manager = system.actorOf(Props[GameManager](), "GameManager")
 
     def index = Action { implicit request =>
         Ok(views.html.multiplayer())
     }
 
     def socket = WebSocket.accept[String, String] { request =>
-        println("Getting socket")
+        println("Getting socket game")
         ActorFlow.actorRef { out =>
+          println("Make actor")
           GameActor.props(out, manager)
         }    
     }

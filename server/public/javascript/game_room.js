@@ -14,7 +14,7 @@ canvas.height = window_height;
 const socketRoute = document.getElementById("ws-route").value;
 const socket = new WebSocket(socketRoute.replace("http","ws")); 
 
-let players = {};
+let players = [];
 let player_size = 50;
 
 let player = {
@@ -37,7 +37,13 @@ let updateZone = function() {
 };
 updateZone();
 
+socket.onopen = (event) => {
+    console.log("WebSocket connection established.");
+    //socket.send("New user connected.");
+};
+
 socket.onmessage = (event) => {
+    console.log(event.data)
     const data = JSON.parse(event.data);
     players = data;
     //draw();
@@ -45,10 +51,10 @@ socket.onmessage = (event) => {
 };
 
 document.addEventListener("keydown", (event) => {
-    if(event.code === 'ArrowUp') player.y -= 5;
-    if(event.code === 'ArrowDown') player.y += 5;
-    if(event.code === 'ArrowLeft') player.x -= 5;
-    if(event.code === 'ArrowRight') player.x += 5;
+    if(event.code === 'ArrowUp') player.y -= 10;
+    if(event.code === 'ArrowDown') player.y += 10;
+    if(event.code === 'ArrowLeft') player.x -= 10;
+    if(event.code === 'ArrowRight') player.x += 10;
 
     if(event.code === 'KeyW' || event.code === 'KeyS') player.y = 0;
     if(event.code === 'KeyA' || event.code === 'KeyD') player.x = 0;

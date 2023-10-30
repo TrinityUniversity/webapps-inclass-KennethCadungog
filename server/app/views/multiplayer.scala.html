@@ -1,7 +1,7 @@
 @()(implicit request: RequestHeader, flash: Flash)
 
 @main("Multiplayer Game") {
-    <input type="hidden" id="ws-route" value="@routes.WebSocketChat.socket.absoluteURL()">
+    <input type="hidden" id="ws-route" value="@routes.GameSocketRoom.socket.absoluteURL()">
     
     <head> 
         <title>Task 7</title>

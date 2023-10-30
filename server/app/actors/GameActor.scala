@@ -6,16 +6,18 @@ import akka.actor.ActorRef
 
 class GameActor(out: ActorRef, manager: ActorRef) extends Actor {
     manager ! GameManager.NewPlayer(self)
-
+    println("new actor")
     
     import GameActor._
     def receive = {
-        case _ => //
-        /*
-        case s: String => manager ! GameManager.Message(s)
-        case SendMessage(msg) => out ! msg 
+        case s: String => 
+            println(s)
+            manager ! GameManager.Coordinates(s)
+        case SendCoordinates(coord) => 
+            out ! coord 
+            println("SendCoordinates is reached")
         case m => println("Unhandled player: " + m)
-        */
+        
     }
     
 }
@@ -23,5 +25,5 @@ class GameActor(out: ActorRef, manager: ActorRef) extends Actor {
 object GameActor {
     def props(out: ActorRef, manager: ActorRef) = Props(new GameActor(out, manager))
 
-    //case class SendMessage(msg: String)
+    case class SendCoordinates(coord: String)
 }
