@@ -1,11 +1,25 @@
 console.log("Running version 4.");
 
 const ce = React.createElement
+const csrfToken = document.getElementById("csrfToken").value;
+const validateRoute = document.getElementById("validateRoute").value;
+const tasksRoute = document.getElementById("tasksRoute").value;
+const createRoute = document.getElementById("createRoute").value;
+const deleteRoute = document.getElementById("deleteRoute").value;
+const addRoute = document.getElementById("addRoute").value;
+const logoutRoute = document.getElementById("logoutRoute").value;
 
 class LoginComponent extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {loginName: "", loginPass: "", createName: "", cratePass: ""};
+        this.state = {
+            loginName: "", 
+            loginPass: "", 
+            createName: "", 
+            craetePass: "",
+            loginMessage: "",
+            createMessage: ""
+        };
     }
     render() {
         return ce('div', null,
@@ -18,6 +32,7 @@ class LoginComponent extends React.Component {
             ce('input', {type: "password", id: "loginPass", value: this.state.loginPass, onChange: e => this.changeHandler(e)}),
             ce('br'),
             ce('button', {onclick: e => this.login(e)}, 'Login'),
+            ce('span', {id: "login-message"}, this.state.loginMessage),
             ce('h2', null, 'Create User:'),
             ce('br'),
             'Username: ',
@@ -26,12 +41,33 @@ class LoginComponent extends React.Component {
             'Password: ',
             ce('input', {type: "password", id: "createPass", value: this.state.createPass, onChange: e => this.changeHandler(e)}),
             ce('br'),
-            ce('button', {onClick: e => this.createUser(e)}, 'Create User')     
+            ce('button', {onClick: e => this.createUser(e)}, 'Create User'),     
+            ce('span', {id: "create-message"}, this.state.createMessage),
         );
     }
 
     changeHandler(e) {
-        console.log(e.target['id']);
+        this.setState({ [e.target['id']]: e.target.value });
+    }
+
+    login(e) {
+        const username = this.state.loginName;
+        const password = this.state.loginPass;
+        fetch(validateRoute, {
+            method: 'POST',
+            headers: {'Content-Type': 'applicatoin/json', 'Csrf-Token': csrfToken },
+            body: JSON.stringify({ username, password })
+        }).then(res => res.json()).then(date => {
+          if(data) {
+            //document.getElementById("login-section").hidden = true;
+            //document.getElementById("task-section").hidden = false;
+            //document.getElementById("login-message").innerHTML = "";
+            //document.getElementById("create-message").innerHTML = "";
+            //loadTasks();
+          } else {
+            this.setState({ loginMessage: "Login Failed" });
+          }
+        });
     }
 }
 
@@ -39,6 +75,8 @@ ReactDOM.render(
     ce(LoginComponent, null, null),
     document.getElementById('react-root')
 );
+
+
 
 /*
 function StatelessHello(props) {
