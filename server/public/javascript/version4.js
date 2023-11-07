@@ -9,6 +9,21 @@ const deleteRoute = document.getElementById("deleteRoute").value;
 const addRoute = document.getElementById("addRoute").value;
 const logoutRoute = document.getElementById("logoutRoute").value;
 
+class Version4MainComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { loggedIn: false };
+    }
+    
+    render() {
+        if (this.state.loggedIn) {
+            return ce(TaskListComponent, {doLogout: () => this.setState( { loggedIn: false })});
+        } else {
+            return ce(LoginComponent, { doLogin: () => this.setState( { loggedIn: true} ) });
+        }
+    }
+}
+
 class LoginComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -21,6 +36,7 @@ class LoginComponent extends React.Component {
             createMessage: ""
         };
     }
+
     render() {
         return ce('div', null,
             ce('h2', null, 'Login:'),
@@ -59,11 +75,7 @@ class LoginComponent extends React.Component {
             body: JSON.stringify({ username, password })
         }).then(res => res.json()).then(date => {
           if(data) {
-            //document.getElementById("login-section").hidden = true;
-            //document.getElementById("task-section").hidden = false;
-            //document.getElementById("login-message").innerHTML = "";
-            //document.getElementById("create-message").innerHTML = "";
-            //loadTasks();
+            this.props.doLogin();
           } else {
             this.setState({ loginMessage: "Login Failed" });
           }
@@ -71,8 +83,61 @@ class LoginComponent extends React.Component {
     }
 }
 
+class TaskListComponent extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { tasks: [], newTask: "", taskMessage: "" };
+    }
+
+    componentDidMount() {
+        this.loadTasks();
+    }
+
+    render() {
+        return ce('div', null, 
+        'Task List',
+        ce('br'),
+        ce('ul', null,
+        this.state.tasks.map((task, index) => ce('li', { key: index}, 'A task'))
+        ),
+        ce('br'),
+        ce('div', null,
+            ce('input', {type: 'text', value: this.state.newTask, onChange: e => this.handleChange(e) }),
+            ce('button', {onClick: e => this.handleAddClick(e)}, 'Add Task'),
+            this.state.taskMessage 
+        ),
+        ce('br'),
+        ce('button', {onClick: e => this.props.doLogout() }, 'Log out')
+        );
+    }
+
+    loadTasks() {
+        fetch(tasksRoute).then(res => res.json()).then(tasks => this.setState({ tasks }));
+
+    }
+
+    handleChange(e) {
+        this.setState({newTask: e.target.value})
+    }
+
+    handleAddClick(e) {
+        fetch(addRoute, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Csrf-Toekn': csrfToken },
+            body: JSON.stringify(this.state.newTask)
+        }).then(res => res.json()).then(data => {
+            if(data) {
+                this.loadTasks();
+                this.setState({ taskMessage: "" });
+            } else {
+                this.setState({ taskMessage: "Failed to add." });
+            }
+        });
+    }
+}
+
 ReactDOM.render(
-    ce(LoginComponent, null, null),
+    ce(Version4MainComponent, null, null),
     document.getElementById('react-root')
 );
 
