@@ -81,6 +81,22 @@ class LoginComponent extends React.Component {
           }
         });
     }
+
+    createUser() {
+        const username = this.state.createName;
+        const password = this.state.createPass;
+        fetch(createRoute, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
+            body: JSON.stringify({username, password})
+        }).then(res => res.json()).then(data => {
+            if(data) {
+                this.props.doLogin();
+            } else {
+                this.setState({ createMessage: "User Creatin Failed"});
+            }
+        });
+    }
 }
 
 class TaskListComponent extends React.Component {
@@ -98,7 +114,7 @@ class TaskListComponent extends React.Component {
         'Task List',
         ce('br'),
         ce('ul', null,
-        this.state.tasks.map((task, index) => ce('li', { key: index}, 'A task'))
+        this.state.tasks.map((task, index) => ce('li', { key: index, onClick: e => this.handleDeleteClick(index)}, 'A task'))
         ),
         ce('br'),
         ce('div', null,
@@ -128,9 +144,25 @@ class TaskListComponent extends React.Component {
         }).then(res => res.json()).then(data => {
             if(data) {
                 this.loadTasks();
-                this.setState({ taskMessage: "" });
+                this.setState({ taskMessage: "", newTask: "" });
             } else {
                 this.setState({ taskMessage: "Failed to add." });
+            }
+        });
+    }
+
+    handleDeleteClick(i) {
+        fetch(deleteRoute, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken},
+            body: JSON.stringify(i)
+        }).then(res => res.json()).then(data => {
+            if(data) {
+                this.loadTasks();
+                this.setState({ taskMessage: "" });
+            } else {
+                this.setState({ taskMessage: "Failed to delete."});
+
             }
         });
     }
