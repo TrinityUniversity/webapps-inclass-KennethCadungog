@@ -31,6 +31,11 @@ GET        /chatSocket                   controllers.WebSocketChat.socket
 GET        /game                         controllers.GameSocketRoom.index 
 GET        /gameSocket                   controllers.GameSocketRoom.socket 
 
+#Routes for version 3
+GET        /load3                        controllers.TaskList3.load
+POST       /validate3                    controllers.TaskList3.validate
+GET        /data                         controllers.TaskList3.data
+
 #Routes for version 4
 GET        /load4                        controllers.TaskList4.load
 
