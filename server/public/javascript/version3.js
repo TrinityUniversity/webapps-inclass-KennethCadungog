@@ -6,6 +6,7 @@ const tasksRoute = document.getElementById("tasksRoute").value;
 const createRoute = document.getElementById("createRoute").value;
 const deleteRoute = document.getElementById("deleteRoute").value;
 const addRoute = document.getElementById("addRoute").value;
+const logoutRoute = document.getElementById("logoutRoute").value;
 
 function login() {
     const username = document.getElementById("loginName").value;
@@ -18,9 +19,10 @@ function login() {
         if(data) {
             document.getElementById("login-section").hidden =  true;
             document.getElementById("task-section").hidden = false;
+            document.getElementById("login-message").innerHTML = "";
             loadTasks();
         } else {
-            // TODO:
+            document.getElementById("login-message").innerHTML = "Login Failed";
         }
     });
 }
@@ -36,9 +38,11 @@ function createUser() {
         if(data) {
             document.getElementById("login-section").hidden =  true;
             document.getElementById("task-section").hidden = false;
+            document.getElementById("login-message").innerHTML = "";
+            document.getElementById("create-message").innerHTML = "";
             loadTasks();
         } else {
-            // TODO:
+            document.getElementById("create-message").innerHTML = "User Creation Failed";
         }
     });
 }
@@ -58,9 +62,10 @@ function loadTasks() {
                     body: JSON.stringify(i)
                 }).then(res => res.json()).then(data => {
                     if(data) {
+                        document.getElementById("task-message").innerHTML = "";
                         loadTasks();
                     } else {
-                        // TODO:
+                        document.getElementById("task-message").innerHTML = "Failed to delete";
                     }
                 });
             }
@@ -79,8 +84,9 @@ function addTask() {
         if(data) {
             loadTasks();
             document.getElementById("newTask").value = "";
+            document.getElementById("task-message").innerHTML = "";
         } else {
-            // TODO:
+            document.getElementById("task-message").innerHTML = "Failed to add task";
         }
     });
 }
