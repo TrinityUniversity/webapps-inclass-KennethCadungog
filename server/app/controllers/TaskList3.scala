@@ -8,7 +8,7 @@ import models.TaskListInMemoryModel
 import play.api.libs.json.Json 
 import models._
 import play.api.libs.json.JsSuccess
-import javafx.concurrent.Task
+//import javafx.concurrent.Task
 import scala.annotation.unspecialized
 import play.api.libs.json.JsError
 import play.api.libs.json.Reads
@@ -25,9 +25,9 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
         request.body.asJson.map { body =>
             Json.fromJson[A](body) match {
                 case JsSuccess(a, path) => f(a)
-                case e @ JsError(_) => Redirect(routes.TaskList3.load())
+                case e @ JsError(_) => Redirect(routes.TaskList3.load)
             }    
-        }.getOrElse(Redirect(routes.TaskList3.load()))
+        }.getOrElse(Redirect(routes.TaskList3.load))
     }
 
     def validate = Action { implicit request =>
@@ -52,9 +52,9 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
                 } else {
                     Ok(Json.toJson(false))
                 }
-            case e @ JsError(_) => Redirect(routes.TaskList3.load())
+            case e @ JsError(_) => Redirect(routes.TaskList3.load)
           }
-        }.getOrElse(Redirect(routes.TaskList3.load()))
+        }.getOrElse(Redirect(routes.TaskList3.load))
     }
 
     def taskList = Action { implicit request =>
@@ -72,7 +72,7 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
                 case JsSuccess(task, path) => 
                     TaskListInMemoryModel.addTask(username, task);
                     Ok(Json.toJson(true))
-                case e @ JsError(_) => Redirect(routes.TaskList3.load())
+                case e @ JsError(_) => Redirect(routes.TaskList3.load)
                 } 
             }.getOrElse(Ok(Json.toJson(true)))
         }.getOrElse(Ok(Json.toJson(false)))
@@ -86,7 +86,7 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
                     case JsSuccess(index, path) =>
                         TaskListInMemoryModel.removeTask(username, index)
                         Ok(Json.toJson(true))
-                    case e @ JsError(_) => Redirect(routes.TaskList3.load())
+                    case e @ JsError(_) => Redirect(routes.TaskList3.load)
                 }
             }.getOrElse(Ok(Json.toJson(false)))    
         }.getOrElse(Ok(Json.toJson(false)))     
