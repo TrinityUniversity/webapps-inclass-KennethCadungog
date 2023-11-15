@@ -34,8 +34,11 @@ GET        /gameSocket                   controllers.GameSocketRoom.socket
 #Routes for version 3
 GET        /load3                        controllers.TaskList3.load
 POST       /validate3                    controllers.TaskList3.validate
+POST       /create3                      controllers.TaskList3.createUser
 GET        /taskList3                    controllers.TaskList3.taskList
 POST       /addTask3                     controllers.TaskList3.addTask
+POST       /deleteTask3                  controllers.TaskList3.delete
+GET        /logout3                      controllers.TaskList3.logout
 
 #Routes for version 4
 GET        /load4                        controllers.TaskList4.load

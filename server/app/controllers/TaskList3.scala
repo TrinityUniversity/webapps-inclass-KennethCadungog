@@ -10,6 +10,7 @@ import models._
 import play.api.libs.json.JsSuccess
 import javafx.concurrent.Task
 import scala.annotation.unspecialized
+import play.api.libs.json.JsError
 
 @Singleton
 class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(cc) {
@@ -25,6 +26,22 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
             case JsSuccess(ud, path) => 
                 ud.username
                 if (TaskListInMemoryModel.validateUser(ud.username, ud.password)) {
+                    Ok(Json.toJson(true))
+                        .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
+                } else {
+                    Ok(Json.toJson(false))
+                }
+            case e @ JsError(_) => Redirect(routes.TaskList3.load())
+          }
+        }.getOrElse(Redirect(routes.TaskList3.load()))
+    }
+
+    def createUser = Action { implicit request =>
+        request.body.asJson.map { body => 
+          Json.fromJson[UserData](body) match {
+            case JsSuccess(ud, path) => 
+                ud.username
+                if (TaskListInMemoryModel.createUser(ud.username, ud.password)) {
                     Ok(Json.toJson(true))
                         .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
                 } else {
@@ -54,6 +71,24 @@ class TaskList3 @Inject() (cc: ControllerComponents) extends AbstractController(
                 } 
             }.getOrElse(Ok(Json.toJson(true)))
         }.getOrElse(Ok(Json.toJson(false)))
+    }
+
+    def delete = Action { implicit request =>
+        val usernameOption = request.session.get("username")
+        usernameOption.map { username =>
+            request.body.asJson.map { body =>
+                Json.fromJson[Int](body) match {
+                    case JsSuccess(index, path) =>
+                        TaskListInMemoryModel.removeTask(username, index)
+                        Ok(Json.toJson(true))
+                    case e @ JsError(_) => Redirect(routes.TaskList3.load())
+                }
+            }.getOrElse(Ok(Json.toJson(false)))    
+        }.getOrElse(Ok(Json.toJson(false)))     
+    }
+
+    def logout = Action { implicit request => 
+        Ok(Json.toJson(true)).withNewSession
     }
 
 }

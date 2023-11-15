@@ -25,14 +25,70 @@ function login() {
     });
 }
 
+function createUser() {
+    const username = document.getElementById("createName").value;
+    const password = document.getElementById("createPass").value;
+    fetch(createRoute, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
+        body: JSON.stringify({ username, password })
+    }).then(res => res.json()).then(data => {
+        if(data) {
+            document.getElementById("login-section").hidden =  true;
+            document.getElementById("task-section").hidden = false;
+            loadTasks();
+        } else {
+            // TODO:
+        }
+    });
+}
+
 function loadTasks() {
     const ul = document.getElementById("task-list");
+    ul.innerHTML = "";
     fetch(tasksRoute).then(res => res.json()).then(tasks => {
-        for(task of tasks) {
+        for(let i = 0; i < tasks.length; ++i) {
             const li = document.createElement("li");
-            const text = document.createTextNode(task);
+            const text = document.createTextNode(task[i]);
             li.appendChild(text);
+            li.onclick = e => {
+                fetch(deleteRoute, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
+                    body: JSON.stringify(i)
+                }).then(res => res.json()).then(data => {
+                    if(data) {
+                        loadTasks();
+                    } else {
+                        // TODO:
+                    }
+                });
+            }
             ul.appendChild(li);
         }
     });
 }
+
+function addTask() {
+    let task = document.getElementById("newTask").value;
+    fetch(addRoute, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
+        body: JSON.stringify(task)
+    }).then(res => res.json()).then(data => {
+        if(data) {
+            loadTasks();
+            document.getElementById("newTask").value = "";
+        } else {
+            // TODO:
+        }
+    });
+}
+
+function logout() {
+    fetch(logoutRoute).then(res => res.json()).then(tasks => {
+        document.getElementById("login-section").hidden = false;
+        document.getElementById("task-section").hidden = true;
+    });
+}
+
