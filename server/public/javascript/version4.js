@@ -31,7 +31,7 @@ class LoginComponent extends React.Component {
             loginName: "", 
             loginPass: "", 
             createName: "", 
-            craetePass: "",
+            createPass: "",
             loginMessage: "",
             createMessage: ""
         };
@@ -47,7 +47,7 @@ class LoginComponent extends React.Component {
             'Password: ',
             ce('input', {type: "password", id: "loginPass", value: this.state.loginPass, onChange: e => this.changeHandler(e)}),
             ce('br'),
-            ce('button', {onclick: e => this.login(e)}, 'Login'),
+            ce('button', {onClick: e => this.login(e)}, 'Login'),
             ce('span', {id: "login-message"}, this.state.loginMessage),
             ce('h2', null, 'Create User:'),
             ce('br'),
@@ -71,9 +71,9 @@ class LoginComponent extends React.Component {
         const password = this.state.loginPass;
         fetch(validateRoute, {
             method: 'POST',
-            headers: {'Content-Type': 'applicatoin/json', 'Csrf-Token': csrfToken },
+            headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
             body: JSON.stringify({ username, password })
-        }).then(res => res.json()).then(date => {
+        }).then(res => res.json()).then(data => {
           if(data) {
             this.props.doLogin();
           } else {
@@ -93,7 +93,7 @@ class LoginComponent extends React.Component {
             if(data) {
                 this.props.doLogin();
             } else {
-                this.setState({ createMessage: "User Creatin Failed"});
+                this.setState({ createMessage: "User Creation Failed"});
             }
         });
     }
@@ -114,7 +114,7 @@ class TaskListComponent extends React.Component {
         'Task List',
         ce('br'),
         ce('ul', null,
-        this.state.tasks.map((task, index) => ce('li', { key: index, onClick: e => this.handleDeleteClick(index)}, 'A task'))
+        this.state.tasks.map((task, index) => ce('li', { key: index, onClick: e => this.handleDeleteClick(index)}, /*'A task'*/task))
         ),
         ce('br'),
         ce('div', null,
@@ -139,7 +139,7 @@ class TaskListComponent extends React.Component {
     handleAddClick(e) {
         fetch(addRoute, {
             method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Csrf-Toekn': csrfToken },
+            headers: {'Content-Type': 'application/json', 'Csrf-Token': csrfToken },
             body: JSON.stringify(this.state.newTask)
         }).then(res => res.json()).then(data => {
             if(data) {
