@@ -15,6 +15,7 @@ import scala.concurrent.ExecutionContext
 import play.api.db.slick.HasDatabaseConfigProvider
 import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
+import scala.concurrent.Future 
 
 @Singleton
 class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider, cc: ControllerComponents)(implicit ec: ExecutionContext) 
@@ -26,7 +27,7 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         Ok(views.html.version5Main())
     }
 
-    def withJsonBody[A](f: A => Result)(implicit request: Request[AnyContent], reads: Reads[A]) = {
+    def withJsonBody[A](f: A => Future[Result])(implicit request: Request[AnyContent], reads: Reads[A]) = {
         request.body.asJson.map { body =>
             Json.fromJson[A](body) match {
                 case JsSuccess(a, path) => f(a)
@@ -39,15 +40,17 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         request.session.get("username").map(f).getOrElse(Ok(Json.toJson(Seq.empty[String])))
     }
 
-    def validate = Action { implicit request =>
+    def validate = Action.async { implicit request =>
         withJsonBody[UserData] { ud =>
-                if (model.validateUser(ud.username, ud.password)) {
+            model.validateUser(ud.username, ud.password).map { userExists => 
+                if (userExists) {
                     Ok(Json.toJson(true))
                         .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
                 } else {
                     Ok(Json.toJson(false))
                 }
           }
+        }
     }
 
     def createUser = Action { implicit request =>
