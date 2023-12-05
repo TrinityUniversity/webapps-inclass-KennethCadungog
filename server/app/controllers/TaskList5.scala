@@ -36,8 +36,8 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         }.getOrElse(Redirect(routes.TaskList3.load))
     }
 
-    def withSessionUsername(f: String => Result)(implicit request: Request[AnyContent]) = {
-        request.session.get("username").map(f).getOrElse(Ok(Json.toJson(Seq.empty[String])))
+    def withSessionUsername(f: String => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+        request.session.get("username").map(f).getOrElse(Future.successful(Ok(Json.toJson(Seq.empty[String]))))
     }
 
     def validate = Action.async { implicit request =>
@@ -53,20 +53,20 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         }
     }
 
-    def createUser = Action { implicit request =>
-        withJsonBody[UserData] { ud =>
-            if (model.createUser(ud.username, ud.password)) {
+    def createUser = Action.async { implicit request =>
+        withJsonBody[UserData] { ud => model.createUser(ud.username, ud.password).map { userCreated => 
+            if (userCreated) {
                 Ok(Json.toJson(true))
                   .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
             } else {
                 Ok(Json.toJson(false))
             }
-        }
+        }   }
     }
 
-    def taskList = Action {
+    def taskList = Action.async { implicit request => 
         withSessionUsername { username =>
-            Ok(Json.toJson(model.getTasks(username)))
+            model.getTasks(username).map(tasks => Ok(Json.toJson(tasks)))
         }
     }
 
@@ -91,5 +91,5 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
     def logout = Action { implicit request =>
         Ok(Json.toJson(true)).withSession(request.session = "username")    
     }
-
+  
 }
