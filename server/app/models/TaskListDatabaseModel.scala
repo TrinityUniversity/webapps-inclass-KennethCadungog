@@ -17,7 +17,7 @@ class TaskListDatabaseModel(db: Database)(implicit ec: ExecutionContext) {
     def createUser(username: String, password: String): Future[Option[Int]] = {
         val matches = db.run(Users.filter(userRow => userRow.username === username).result)
         matches.flatMap { userRows =>
-            if (userRows.nonEmpty) {
+            if (userRows.isEmpty) {
             db.run(Users += UsersRow(-1, username, BCrypt.hashpw(password, BCrypt.gensalt())))
                 .flatMap{ addCount => 
                     if (addCount > 0) db.run(Users.filter(userRow => userRow.username === username).result)
