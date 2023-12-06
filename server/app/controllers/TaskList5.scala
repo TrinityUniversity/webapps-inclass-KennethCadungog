@@ -1,7 +1,5 @@
 package controllers
 
-package controllers
-
 import javax.inject._
 
 import play.api.mvc._
@@ -27,16 +25,16 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         Ok(views.html.version5Main())
     }
 
-    implicit val userDataReads = Json.read[UserData]
-    implicit val taskDataWrites = Json.writes[TaskItem]
+    implicit val userDataReads = Json.reads[UserData]
+    implicit val taskItemWrites = Json.writes[TaskItem]
 
-    def withJsonBody[A](f: A => Future[Result])(implicit request: Request[AnyContent], reads: Reads[A]) = {
+    def withJsonBody[A](f: A => Future[Result])(implicit request: Request[AnyContent], reads: Reads[A]): Future[Result] = {
         request.body.asJson.map { body =>
             Json.fromJson[A](body) match {
                 case JsSuccess(a, path) => f(a)
-                case e @ JsError(_) => Redirect(routes.TaskList3.load)
+                case e @ JsError(_) => Future.successful(Redirect(routes.TaskList3.load))
             }    
-        }.getOrElse(Redirect(routes.TaskList3.load))
+        }.getOrElse(Future.successful(Redirect(routes.TaskList3.load)))
     }
 
     def withSessionUsername(f: String => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
@@ -44,7 +42,9 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
     }
 
     def withSessionUserid(f: Int => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
-        request.session.get("userid").map(userid => f(userid.toInt)).getOrElse(Future.successful(Ok(Json.toJson(Seq.empty[String]))))
+        request.session.get("userid").map(userid => f(userid.toInt)).getOrElse {
+            Future.successful(Ok(Json.toJson(Seq.empty[String])))
+        }
     }
 
     def validate = Action.async { implicit request =>
@@ -54,8 +54,8 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
                     case Some(userid) =>
                         Ok(Json.toJson(true))
                             .withSession("username" -> ud.username, "userid" -> userid.toString, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
-                case None =>
-                    Ok(Json.toJson(false))
+                    case None =>
+                        Ok(Json.toJson(false))
                 }
             }
         }
@@ -96,7 +96,7 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
     }
 
     def logout = Action { implicit request =>
-        Ok(Json.toJson(true)).withSession(request.session = "username")    
+        Ok(Json.toJson(true)).withSession(request.session - "username")    
     }
   
 }

@@ -28,19 +28,19 @@ class TaskListDatabaseModel(db: Database)(implicit ec: ExecutionContext) {
         }
     }
 
-    def getTasks(username: String): Future[Seq[String]] = {
+    def getTasks(username: String): Future[Seq[TaskItem]] = {
         db.run(
             (for {
                 user <- Users if user.username === username
-                item <- Items if item.userID === user.id
+                item <- Items if item.userId === user.id
             } yield {
                 item
             }).result 
-        ).map(items => items.map(item => TaskItem(item.itemid, item.text)))
+        ).map(items => items.map(item => TaskItem(item.itemId, item.text.getOrElse(""))))
     }
 
-    def addTask(userid: Int, task: String): Unit = {
-        db.run(Items += ItemsRow(-1, userid, task))
+    def addTask(userid: Int, task: String): Future[Int] = {
+        db.run(Items += ItemsRow(-1, Option(userid), Option(task)))
     }
 
     def removeTask(itemId: Int): Future[Boolean] = {
