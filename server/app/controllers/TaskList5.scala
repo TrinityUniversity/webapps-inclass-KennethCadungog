@@ -40,27 +40,33 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         request.session.get("username").map(f).getOrElse(Future.successful(Ok(Json.toJson(Seq.empty[String]))))
     }
 
+    def withSessionUserid(f: Int => Future[Result])(implicit request: Request[AnyContent]): Future[Result] = {
+        request.session.get("userid").map(userid => f(userid.toInt)).getOrElse(Future.successful(Ok(Json.toJson(Seq.empty[String]))))
+    }
+
     def validate = Action.async { implicit request =>
         withJsonBody[UserData] { ud =>
-            model.validateUser(ud.username, ud.password).map { userExists => 
-                if (userExists) {
-                    Ok(Json.toJson(true))
-                        .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
-                } else {
+            model.validateUser(ud.username, ud.password).map { ouserId => 
+                ouserId match {
+                    case Some(userid) =>
+                        Ok(Json.toJson(true))
+                            .withSession("username" -> ud.username, "userid" -> userid.toString, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
+                case None =>
                     Ok(Json.toJson(false))
                 }
-          }
+            }
         }
     }
 
     def createUser = Action.async { implicit request =>
-        withJsonBody[UserData] { ud => model.createUser(ud.username, ud.password).map { userCreated => 
-            if (userCreated) {
-                Ok(Json.toJson(true))
-                  .withSession("username" -> ud.username, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
-            } else {
-                Ok(Json.toJson(false))
-            }
+        withJsonBody[UserData] { ud => model.createUser(ud.username, ud.password).map { ouserId => 
+            ouserId match {
+                case Some(userid) => 
+                    Ok(Json.toJson(true))
+                    .withSession("username" -> ud.username, "userid" -> userid.toString, "csrfToken" -> play.filters.csrf.CSRF.getToken.get.value)
+                case None =>
+                    Ok(Json.toJson(false))
+                }
         }   }
     }
 
@@ -70,20 +76,18 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         }
     }
 
-    def addTask = Action { implicit request =>
-        withSessionUsername { username =>
+    def addTask = Action.async { implicit request =>
+        withSessionUserid { userid =>
             withJsonBody[String] { task =>
-                model.addTask(username, task);
-                Ok(Json.toJson(true))
+                model.addTask(userid, task).map(count => Ok(Json.toJson(count > 0)))
             }
         }    
     }
 
-    def delete = Action { implicit request => 
+    def delete = Action.async { implicit request => 
         withSessionUsername { username =>
-            withJsonBody[Int] { index =>
-                model.removeTask(username, index)
-                Ok(Json.toJson(true))    
+            withJsonBody[Int] { itemId =>
+                model.removeTask(itemId).map(removed => Ok(Json.toJson(removed)))    
             }
         }    
     }
