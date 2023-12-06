@@ -27,6 +27,9 @@ class TaskList5 @Inject()(protected val dbConfigProvider: DatabaseConfigProvider
         Ok(views.html.version5Main())
     }
 
+    implicit val userDataReads = Json.read[UserData]
+    implicit val taskDataWrites = Json.writes[TaskItem]
+
     def withJsonBody[A](f: A => Future[Result])(implicit request: Request[AnyContent], reads: Reads[A]) = {
         request.body.asJson.map { body =>
             Json.fromJson[A](body) match {

@@ -28,15 +28,15 @@ class TaskListDatabaseModel(db: Database)(implicit ec: ExecutionContext) {
         }
     }
 
-    def getTasks(username: String): Seq[String] = {
+    def getTasks(username: String): Future[Seq[String]] = {
         db.run(
             (for {
                 user <- Users if user.username === username
                 item <- Items if item.userID === user.id
             } yield {
-                item.text
+                item
             }).result 
-        )
+        ).map(items => items.map(item => TaskItem(item.itemid, item.text)))
     }
 
     def addTask(userid: Int, task: String): Unit = {
