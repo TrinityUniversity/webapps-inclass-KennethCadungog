@@ -23,15 +23,15 @@ GET        /msgList1                     controllers.TaskList1.msgList
 POST       /add_pubMsg1                  controllers.TaskList1.add_pubMsg
 POST       /add_pvtMsg1                  controllers.TaskList1.add_pvtMsg
 
-#Routes for WebSocket chat Application
+# Routes for WebSocket chat Application
 GET        /chat                         controllers.WebSocketChat.index 
 GET        /chatSocket                   controllers.WebSocketChat.socket 
 
-#Routes for Game room Application
+# Routes for Game room Application
 GET        /game                         controllers.GameSocketRoom.index 
 GET        /gameSocket                   controllers.GameSocketRoom.socket 
 
-#Routes for version 3
+# Routes for version 3
 GET        /load3                        controllers.TaskList3.load
 POST       /validate3                    controllers.TaskList3.validate
 POST       /create3                      controllers.TaskList3.createUser
@@ -40,17 +40,20 @@ POST       /addTask3                     controllers.TaskList3.addTask
 POST       /deleteTask3                  controllers.TaskList3.delete
 GET        /logout3                      controllers.TaskList3.logout
 
-#Routes for version 4
+# Routes for version 4
 GET        /load4                        controllers.TaskList4.load
 
-#Routes for version 5
-GET        /load5                        controllers.TaskList5.load
-POST       /validate5                    controllers.TaskList5.validate
-POST       /createUser5                  controllers.TaskList5.createUser
-GET        /taskList5                    controllers.TaskList5.taskList
-POST       /addTask5                     controllers.TaskList5.addTask
-POST       /deleteTask5                  controllers.TaskList5.delete 
-GET        /logout5                      controllers.TaskList5.logout
+# Routes for version 5
+# GET        /load5                        controllers.TaskList5.load
+# POST       /validate5                    controllers.TaskList5.validate
+# POST       /createUser5                  controllers.TaskList5.createUser
+# GET        /taskList5                    controllers.TaskList5.taskList
+# POST       /addTask5                     controllers.TaskList5.addTask
+# POST       /deleteTask5                  controllers.TaskList5.delete 
+# GET        /logout5                      controllers.TaskList5.logout
+
+# Routes for version 6
+GET          /load6                        controllers.TaskList6.load
 
 
 
