@@ -12,8 +12,6 @@ import play.twirl.api.Html
 @Singleton
 class TaskList6 @Inject() (cc: ControllerComponents) extends AbstractController(cc) {
   def load = Action { implicit request =>
-    val title = "HI"
-    val content = Html("Welcome")
-    Ok(views.html.main(title)(content))
+    Ok(views.html.task10())
   }
 }
