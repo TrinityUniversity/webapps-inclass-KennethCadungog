@@ -52,8 +52,11 @@ GET        /load4                        controllers.TaskList4.load
 # POST       /deleteTask5                  controllers.TaskList5.delete 
 # GET        /logout5                      controllers.TaskList5.logout
 
-# Routes for version 6
+# Routes for Task 4 version 2
 GET          /load6                        controllers.TaskList6.load
+
+# Routes for Task 11
+GET          /load7                        controllers.DrawingRoom.load
 
 
 

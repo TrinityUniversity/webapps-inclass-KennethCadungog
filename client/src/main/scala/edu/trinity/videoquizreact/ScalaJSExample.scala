@@ -15,22 +15,19 @@ import slinky.web.html._
 object ScalaJSExample {
 
   def main(args: Array[String]): Unit = {
-    // dom.document.getElementById("scalajsShoutOut").textContent = SharedMessages.itWorks
-    println("Call the react stuff.")
+    println("Something else.")
     
-    ReactDOM.render(
-      h1("Hello, world!"),
-      dom.document.getElementById("root")
-    )
 
+    val drawing = document.getElementById("canvas")
+    if (drawing != null) {
+      new Task10
+    }
+
+    val drawing2 = document.getElementById("canvas2")
+    if (drawing2 != null) {
+      Drawing
+    }
     
   }
-
-  
-
-  // def drawToCanvas(canvas: html.Canvas): Unit = {
-  //   val context = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-  //   context.fillRect(100,100,200,150)
-  // }
 
 }
