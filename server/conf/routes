@@ -44,15 +44,26 @@ GET        /logout3                      controllers.TaskList3.logout
 GET        /load4                        controllers.TaskList4.load
 
 # Routes for version 5
-GET        /load5                        controllers.TaskList5.load
-POST       /validate5                    controllers.TaskList5.validate
-POST       /createUser5                  controllers.TaskList5.createUser
-GET        /taskList5                    controllers.TaskList5.taskList
-POST       /addTask5                     controllers.TaskList5.addTask
-POST       /deleteTask5                  controllers.TaskList5.delete 
-GET        /logout5                      controllers.TaskList5.logout
+# GET        /load5                        controllers.TaskList5.load
+# POST       /validate5                    controllers.TaskList5.validate
+# POST       /createUser5                  controllers.TaskList5.createUser
+# GET        /taskList5                    controllers.TaskList5.taskList
+# POST       /addTask5                     controllers.TaskList5.addTask
+# POST       /deleteTask5                  controllers.TaskList5.delete 
+# GET        /logout5                      controllers.TaskList5.logout
 
-# Routes for Task 4 version 2
+# Routes for Task 9
+GET          /msgList9                     controllers.Task9.msgList
+GET          /login9                       controllers.Task9.login
++ nocsrf
+POST         /validateLogin9               controllers.Task9.validateLogin
++ nocsrf
+POST         /create9                      controllers.Task9.createUser
++ nocsrf
+POST         /addMessage9                  controllers.Task9.add_Msg
+GET          /logout9                      controllers.Task9.logout
+
+# Routes for Task 10
 GET          /load6                        controllers.TaskList6.load
 
 # Routes for Task 11

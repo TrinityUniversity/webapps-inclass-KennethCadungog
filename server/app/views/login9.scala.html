@@ -1,0 +1,25 @@
+@()(implicit request: RequestHeader, flash: Flash)
+
+@main("Login 9") {
+    <h2>Login</h2>
+
+    <form method="post" action="@routes.Task9.validateLogin">
+        <h3>Login with POST</h3>
+        <br>
+        Username: <input type="text" name="username" id="username-login"></input>
+        <br>
+        Password: <input type="password" name="password" id="password-login"></input>
+        <br>
+        <input type="submit"></input>
+    </form>
+
+    <form method="post" action="@routes.Task9.createUser">
+        <h3>Create User</h3>
+        <br>
+        Username: <input type="text" name="username" id="username-create"></input>
+        <br>
+        Password: <input type="password" name="password" id="password-create"></input>
+        <br>
+        <input type="submit"></input>
+    </form>
+} 

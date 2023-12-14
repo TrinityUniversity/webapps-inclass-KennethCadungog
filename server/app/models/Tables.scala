@@ -48,30 +48,25 @@ trait Tables {
   lazy val Items = new TableQuery(tag => new Items(tag))
 
   /** Entity class storing rows of table Messages
-   *  @param messageId Database column message_id SqlType(serial), AutoInc, PrimaryKey
-   *  @param userId Database column user_id SqlType(int4), Default(None)
-   *  @param text Database column text SqlType(varchar), Length(2000,true), Default(None) */
-  case class MessagesRow(messageId: Int, userId: Option[Int] = None, text: Option[String] = None)
+   *  @param text Database column text SqlType(varchar), Length(2000,true), Default(None)
+   *  @param sender Database column sender SqlType(varchar), Length(20,true), Default(None)
+   *  @param receiver Database column receiver SqlType(varchar), Length(20,true), Default(None) */
+  case class MessagesRow(text: Option[String] = None, sender: Option[String] = None, receiver: Option[String] = None)
   /** GetResult implicit for fetching MessagesRow objects using plain SQL queries */
-  implicit def GetResultMessagesRow(implicit e0: GR[Int], e1: GR[Option[Int]], e2: GR[Option[String]]): GR[MessagesRow] = GR{
+  implicit def GetResultMessagesRow(implicit e0: GR[Option[String]]): GR[MessagesRow] = GR{
     prs => import prs._
-    MessagesRow.tupled((<<[Int], <<?[Int], <<?[String]))
+    MessagesRow.tupled((<<?[String], <<?[String], <<?[String]))
   }
   /** Table description of table messages. Objects of this class serve as prototypes for rows in queries. */
   class Messages(_tableTag: Tag) extends profile.api.Table[MessagesRow](_tableTag, "messages") {
-    def * = (messageId, userId, text).<>(MessagesRow.tupled, MessagesRow.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = ((Rep.Some(messageId), userId, text)).shaped.<>({r=>import r._; _1.map(_=> MessagesRow.tupled((_1.get, _2, _3)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def * = (text, sender, receiver).<>(MessagesRow.tupled, MessagesRow.unapply)
 
-    /** Database column message_id SqlType(serial), AutoInc, PrimaryKey */
-    val messageId: Rep[Int] = column[Int]("message_id", O.AutoInc, O.PrimaryKey)
-    /** Database column user_id SqlType(int4), Default(None) */
-    val userId: Rep[Option[Int]] = column[Option[Int]]("user_id", O.Default(None))
     /** Database column text SqlType(varchar), Length(2000,true), Default(None) */
     val text: Rep[Option[String]] = column[Option[String]]("text", O.Length(2000,varying=true), O.Default(None))
-
-    /** Foreign key referencing Users (database name messages_user_id_fkey) */
-    lazy val usersFk = foreignKey("messages_user_id_fkey", userId, Users)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.Cascade)
+    /** Database column sender SqlType(varchar), Length(20,true), Default(None) */
+    val sender: Rep[Option[String]] = column[Option[String]]("sender", O.Length(20,varying=true), O.Default(None))
+    /** Database column receiver SqlType(varchar), Length(20,true), Default(None) */
+    val receiver: Rep[Option[String]] = column[Option[String]]("receiver", O.Length(20,varying=true), O.Default(None))
   }
   /** Collection-like TableQuery object for table Messages */
   lazy val Messages = new TableQuery(tag => new Messages(tag))

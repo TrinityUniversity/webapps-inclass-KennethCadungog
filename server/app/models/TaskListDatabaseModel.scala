@@ -5,45 +5,32 @@ import scala.concurrent.ExecutionContext
 import models.Tables._ 
 import scala.concurrent.Future 
 import org.mindrot.jbcrypt.BCrypt
-import shared.MessageItem
+import models._
 
 class TaskListDatabaseModel(db: Database)(implicit ec: ExecutionContext) {
-    def validateUser(username: String, password: String): Future[Option[Int]] = {
-        val matches = db.run(Users.filter(userRow => userRow.username === username).result)
-        matches.map(userRows => userRows.headOption.flatMap {
-            userRow => if (BCrypt.checkpw(password, userRow.password)) Some(userRow.id) else None
-        })
+
+    def createUser(username: String, password: String): Future[Boolean] = {
+        db.run(Users += UsersRow(-1, username, password)).map(addCount => addCount > 0)
     }
 
-    def createUser(username: String, password: String): Future[Option[Int]] = {
-        val matches = db.run(Users.filter(userRow => userRow.username === username).result)
-        matches.flatMap { userRows =>
-            if (userRows.isEmpty) {
-            db.run(Users += UsersRow(-1, username, BCrypt.hashpw(password, BCrypt.gensalt())))
-                .flatMap{ addCount => 
-                    if (addCount > 0) db.run(Users.filter(userRow => userRow.username === username).result)
-                        .map(_.headOption.map(_.id))
-                    else Future.successful(None)
-                }
-            } else Future.successful(None)
-        }
+    def sendMessage(message: Option[String], username: Option[String], receiver: Option[String]): Future[Boolean] = {
+        db.run(Messages += MessagesRow(message, username, receiver)).map(addCount => addCount > 0)
     }
 
+    def validateUser(username: String, password: String): Future[Boolean] = {
+        val matches = db.run(Users.filter(UsersRow => UsersRow.username === username && UsersRow.password === password).result)
+        matches.map(UserRows => UserRows.nonEmpty)
+    }
 
-    def getMessage(username: String): Future[Seq[MessageItem]] = {
+    def getMessages(username: String): Future[Seq[MessageItem]] = {
         db.run(
             (for {
-                user <- Users if user.username === username
-                message <- Messages if messages.receiver === user.username || messages.username === "evryone"
-            } yield {
-                message
-            }).result 
-        ).map(messages => messages.map(message => MessageItem(message.sender, message.text)))
-    }
-
-
-    def addMessage(receiver: Int, message: String): Future[Int] = {
-        db.run(Messages += MessagesRow(-1, Option(receiver), Option(message)))
+                    user <- Users if user.username === username
+                    message <- Messages if message.receiver === username || message.receiver === "everyone"
+                 } yield {
+                    message
+            }).result
+        ).map(messages => messages.map(messages => MessageItem(messages.text, messages.sender)))
     }
 
 }

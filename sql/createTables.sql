@@ -4,8 +4,8 @@ CREATE TABLE users (
     password varchar(200) NOT NULL
 );
 
-CREATE TABLE items (
-    item_id SERIAL PRIMARY KEY,
-    user_id int4 NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+CREATE TABLE messages (
     text varchar(2000) NOT NULL 
+    sender varchar (30) NOT NULL
+    receiver varchar (30) NOT NULL
 );

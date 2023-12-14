@@ -1,0 +1,35 @@
+ @(msgs: Seq[MessageItem], username: String)(implicit request: RequestHeader, flash: Flash)
+ 
+@main("Message Board 9") {
+    <h1>@username's Message Board</h1>
+ 
+    <h2>Public Messages</h2>
+    <ul>
+        @for((msg) <- msgs) {
+            <li><em>@msg.message</em> : @msg.Sender<li>
+        }
+    </ul>
+ 
+    <form method="post" action="@routes.Task9.add_Msg"> 
+        <h3>Send a Public Message</h3>
+        <input type="text" name="message"></input>
+        <input type="hidden" name="user" value="everyone"></input>
+        <input type="submit"></input>
+    </form>
+
+
+    
+    <form method="post" action="@routes.Task9.add_Msg"> 
+        <h3>Send a Private Message</h3>
+        User: <input type="text" name="user"></input>
+        <br>
+        Message: <input type="text" name="message"></input>
+        <br>
+        <input type="submit"></input>
+    </form>
+ 
+    <div>
+        <a href="@routes.Task9.logout">Logout</a>
+    </div>
+
+}  
