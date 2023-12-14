@@ -13,85 +13,34 @@ import slinky.web.ReactDOM
 import slinky.web.html._
 
 object Drawing {
-    // val canvas = document.getElementById("canvas2").asInstanceOf[html.Canvas]
-    // val context = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-    // canvas.style.background = "#ff8"
+  def want = {}
+  val canvas1 = document.getElementById("canvas2").asInstanceOf[html.Canvas]
+  val context1 = canvas1.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
 
-    // var windowWidth = dom.window.innerWidth
-    // val windowHeight = 600
-    // canvas.width = windowWidth.toInt
-    // canvas.height = windowHeight
+  context1.fillStyle = "#ff8"
+  context1.fillRect(0, 0, canvas1.width, canvas1.height)
 
-    // var drawingPaths: List[DrawingPath] = List.empty
-
-    // case class DrawingPath(points: List[Point], color: String)
-    // case class Point(x: Double, y: Double)
-
-    // canvas.focus()
-
-    // def updateCanvas(): Unit = {
-    //     context.clearRect(0, 0, windowWidth, windowHeight)
-    //     drawingPaths.foreach { path =>
-    //         context.beginPath()
-    //         context.strokeStyle = path.color
-    //         context.lineWidth = 3
-    //         path.points.sliding(2).foreach {
-    //             case List(p1, p2) =>
-    //                 context.moveTo(p1.x, p1.y)
-    //                 context.lineTo(p2.x, p2.y)
-    //                 context.stroke()
-    //         }
-    //         context.closePath()
-    //     }
-    // }
-
-    // updateCanvas()
-
-    // document.addEventListener("keydown", (event: dom.KeyboardEvent) => {
-    //     val step = 5
-    //     val color = "#00FF00"
-
-    //     val x = canvas.width
-    //     val y = canvas.height
-
-    //     event.code match {
-    //         case "ArrowUp" => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x, y - step)), color)
-    //         case "ArrowDown" => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x, y + step)), color)
-    //         case "ArrowLeft" => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x - step, y)), color)
-    //         case "ArrowRight" => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x + step, y)), color)
-    //         case _ =>
-    //     }
-    //     updateCanvas()
-    // })
-
-  //def want = {}
-  val canvas = document.getElementById("canvas2").asInstanceOf[html.Canvas]
-  val context = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-
-  context.fillStyle = "#ff8"
-  context.fillRect(0, 0, canvas.width, canvas.height)
-
-  var drawingPaths: List[DrawingPath] = List.empty
+  var drawingPaths1: List[DrawingPath] = List.empty
 
   case class DrawingPath(points: List[Point], color: String)
   case class Point(x: Double, y: Double)
 
-  canvas.focus()
+  canvas1.focus()
 
-  def updateCanvas(): Unit = {
-    context.fillStyle = "#ff8"
-    context.fillRect(0, 0, canvas.width, canvas.height)
+  def updateCanvas1(): Unit = {
+    context1.fillStyle = "#ff8"
+    context1.fillRect(0, 0, canvas1.width, canvas1.height)
 
-    drawingPaths.foreach { path =>
-      path.points.sliding(2).foreach {
+    drawingPaths1.foreach { path1 =>
+      path1.points.sliding(2).foreach {
         case List(Point(x1, y1), Point(x2, y2)) =>
-          context.beginPath()
-          context.strokeStyle = path.color
-          context.lineWidth = 3
-          context.moveTo(x1, y1)
-          context.lineTo(x2, y2)
-          context.stroke()
-          context.closePath()
+          context1.beginPath()
+          context1.strokeStyle = path1.color
+          context1.lineWidth = 3
+          context1.moveTo(x1, y1)
+          context1.lineTo(x2, y2)
+          context1.stroke()
+          context1.closePath()
         case _ => // Handle other cases if necessary
       }
     }
@@ -103,7 +52,7 @@ object Drawing {
 
     // val x = drawingPaths.lastOption.map(_.points.last.x).getOrElse(0)
     // val y = drawingPaths.lastOption.map(_.points.last.y).getOrElse(0)
-    val lastPointOption = drawingPaths.lastOption.flatMap(_.points.lastOption)
+    val lastPointOption = drawingPaths1.lastOption.flatMap(_.points.lastOption)
 
     val (x, y) = lastPointOption match {
       case Some(lastPoint) => (lastPoint.x, lastPoint.y)
@@ -111,13 +60,13 @@ object Drawing {
     }
 
     event.code match {
-      case "ArrowUp"    => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x, y - step)), color)
-      case "ArrowDown"  => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x, y + step)), color)
-      case "ArrowLeft"  => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x - step, y)), color)
-      case "ArrowRight" => drawingPaths = drawingPaths :+ DrawingPath(List(Point(x + step, y)), color)
+      case "ArrowUp"    => drawingPaths1 = drawingPaths1 :+ DrawingPath(List(Point(x, y - step)), color)
+      case "ArrowDown"  => drawingPaths1 = drawingPaths1 :+ DrawingPath(List(Point(x, y + step)), color)
+      case "ArrowLeft"  => drawingPaths1 = drawingPaths1 :+ DrawingPath(List(Point(x - step, y)), color)
+      case "ArrowRight" => drawingPaths1 = drawingPaths1 :+ DrawingPath(List(Point(x + step, y)), color)
       case _            =>
     }
-    updateCanvas()
+    updateCanvas1()
   })
 
 

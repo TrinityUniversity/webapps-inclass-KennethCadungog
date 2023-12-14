@@ -18,13 +18,12 @@ object ScalaJSExample {
     println("Something else.")
     
 
-    val drawing = document.getElementById("canvas")
-    if (drawing != null) {
-      new Task10
+    if (dom.document.getElementById("task10") != null) {
+      Task10
     }
 
-    val drawing2 = document.getElementById("canvas2")
-    if (drawing2 != null) {
+  
+    if (dom.document.getElementById("task11") != null) {
       Drawing
     }
     

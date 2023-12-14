@@ -12,7 +12,7 @@ import slinky.core._
 import slinky.web.ReactDOM
 import slinky.web.html._
 
-class Task10 {
+object Task10 {
     println("Task10.")
     val canvas = document.getElementById("canvas").asInstanceOf[html.Canvas]
     val context = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
